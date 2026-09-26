@@ -37,7 +37,7 @@ export const Route = createFileRoute("/product/$slug")({
       ],
     };
   },
-  component: ProductDetail;
+  component: ProductDetail,
 });
 
 function ProductDetail() {
