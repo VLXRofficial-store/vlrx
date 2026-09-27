@@ -11,7 +11,7 @@ export function ProductCard({ product }: { product: Product }) {
   const soldOut = product.stock === 0;
 
   const quickAdd = () => {
-    const size = product.sizes.includes("L") ? "L" : product.sizes[0];
+    const size = product.sizes.includes("L") ? "L" : (product.sizes[0] ?? "M");
     add(product.slug, size);
     toast.success(`${product.name} (${size}) added to cart`);
   };
