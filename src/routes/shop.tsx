@@ -4,12 +4,12 @@ import { ProductCard } from "@/components/ProductCard";
 import { ALL_SIZES, COLLECTIONS, PRODUCTS, type Collection } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
-type ShopSearch = { collection?: Collection };
+type ShopSearch = { collection?: Collection | undefined };
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (search: Record<string, unknown>): ShopSearch => ({
-    collection: ["HERITAGE", "STREET", "GENESIS"].includes(String(search.collection))
-      ? (search.collection as Collection)
+    collection: ["HERITAGE", "STREET", "GENESIS"].includes(String(search["collection"]))
+      ? (search["collection"] as Collection)
       : undefined,
   }),
   head: () => ({
