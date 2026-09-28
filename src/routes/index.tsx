@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CreditCard, Package, Truck } from "lucide-react";
+import { Marquee } from "@/components/Marquee";
+import { PriceBlock } from "@/components/PriceBlock";
 import { ProductCard } from "@/components/ProductCard";
 import { COLLECTIONS, PRODUCTS } from "@/lib/products";
 
@@ -27,35 +29,47 @@ function Home() {
     <>
       {/* HERO */}
       <section className="relative flex min-h-[88vh] items-center overflow-hidden px-5">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,168,76,0.16),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(10,10,10,0.9))]" />
-        <div className="relative mx-auto w-full max-w-7xl py-24">
-          <p className="text-[0.6rem] tracking-brand text-gold">EST. 2025 — AGRA, INDIA</p>
-          <h1 className="display mt-6 text-[22vw] leading-[0.82] text-gradient-chrome sm:text-[16vw] lg:text-[13rem]">
-            VLXR
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_oklab,var(--gold)_16%,transparent),transparent_60%)]" />
+        <div className="relative mx-auto w-full max-w-7xl py-20">
+          <p className="text-[0.6rem] tracking-brand text-gold">VLXR / DROP 001 — EST. 2025</p>
+          <h1 className="display mt-6 text-6xl leading-[0.9] sm:text-8xl lg:text-9xl">
+            BORN TO STAND OUT.
+            <br />
+            <span className="text-gold">NOT FIT IN.</span>
           </h1>
-          <p className="mt-4 text-xs tracking-brand text-chrome sm:text-sm">PREMIUM STREETWEAR</p>
-          <p className="mt-6 max-w-md text-2xl text-muted-foreground sm:text-3xl">
-            <span className="display text-foreground">Born Rare</span>
+          <p className="mt-6 max-w-md text-base font-light italic text-muted-foreground">
+            Premium oversized streetwear for those who don't follow.
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link to="/shop" className="btn-base btn-gold-outline">
-              Shop Now <ArrowRight className="h-3.5 w-3.5" />
+          <div className="mt-8">
+            <p className="mb-2 text-[0.6rem] tracking-brand text-muted-foreground">DROP PRICE</p>
+            <PriceBlock price={1999} mrp={2499} size="lg" />
+          </div>
+          <div className="mt-10">
+            <Link
+              to="/shop"
+              className="btn-base border border-foreground bg-foreground font-bold text-background hover:bg-gold hover:border-gold"
+            >
+              GET THE DROP <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
       </section>
 
+      <Marquee
+        className="border-y border-border bg-surface"
+        items={["BORN RARE", "FEAR NONE", "VLXR", "DROP 001", "LIMITED PIECES", "WEAR DIFFERENT"]}
+      />
+
       {/* NEW DROP */}
       <section className="mx-auto max-w-7xl px-5 py-20">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="display text-5xl sm:text-6xl">NEW DROP</h2>
+          <h2 className="display text-4xl sm:text-6xl">DROP 001 — LIVE NOW</h2>
           <Link to="/shop" className="text-[0.6rem] tracking-brand text-gold hover:underline">
             VIEW ALL
           </Link>
         </div>
         <div className="hairline-gold mt-5" />
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
           {PRODUCTS.map((product) => (
             <ProductCard key={product.slug} product={product} />
           ))}
@@ -87,21 +101,31 @@ function Home() {
         </div>
       </section>
 
-      {/* BRAND STORY */}
-      <section className="border-y border-border bg-surface/40">
-        <div className="mx-auto max-w-4xl px-5 py-24 text-center">
-          <h2 className="display text-5xl leading-none sm:text-7xl">
-            NOT A TREND.
+      {/* BRAND STATEMENT */}
+      <section className="flex min-h-[70vh] items-center justify-center border-y border-border px-5 text-center">
+        <div>
+          <p className="display text-5xl font-light italic leading-tight sm:text-7xl">
+            Your statement
             <br />
-            <span className="text-gold">A LEGACY.</span>
-          </h2>
-          <p className="mx-auto mt-8 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            VLXR is built in small, numbered runs for people who refuse to blend in. Heavyweight
-            240GSM cotton, uncompromising cuts, and graphics that don't chase the feed. No mass
-            production. No restocks.
+            <span className="text-gold">before you say a word.</span>
           </p>
-          <p className="mt-10 text-[0.6rem] tracking-brand text-chrome">EST. 2025</p>
+          <p className="mt-10 text-[0.6rem] tracking-brand text-muted-foreground">VLXR — EST. 2025</p>
         </div>
+      </section>
+
+      {/* DELIVERY INFO */}
+      <section className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:grid-cols-3">
+        {[
+          { icon: Truck, title: "FREE DELIVERY", sub: "Agra City Only" },
+          { icon: Package, title: "8-9 WORKING DAYS", sub: "Estimated Delivery" },
+          { icon: CreditCard, title: "ONLINE PAYMENT", sub: "UPI Only — No COD" },
+        ].map(({ icon: Icon, title, sub }) => (
+          <div key={title} className="flex flex-col items-center text-center">
+            <Icon className="h-7 w-7 text-gold" />
+            <p className="mt-4 text-sm font-bold tracking-brand">{title}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+          </div>
+        ))}
       </section>
     </>
   );
