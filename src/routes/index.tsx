@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CreditCard, Package, Truck } from "lucide-react";
+import { Marquee } from "@/components/Marquee";
+import { PriceBlock } from "@/components/PriceBlock";
 import { ProductCard } from "@/components/ProductCard";
 import { COLLECTIONS, PRODUCTS } from "@/lib/products";
 
@@ -99,21 +101,31 @@ function Home() {
         </div>
       </section>
 
-      {/* BRAND STORY */}
-      <section className="border-y border-border bg-surface/40">
-        <div className="mx-auto max-w-4xl px-5 py-24 text-center">
-          <h2 className="display text-5xl leading-none sm:text-7xl">
-            NOT A TREND.
+      {/* BRAND STATEMENT */}
+      <section className="flex min-h-[70vh] items-center justify-center border-y border-border px-5 text-center">
+        <div>
+          <p className="display text-5xl font-light italic leading-tight sm:text-7xl">
+            Your statement
             <br />
-            <span className="text-gold">A LEGACY.</span>
-          </h2>
-          <p className="mx-auto mt-8 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            VLXR is built in small, numbered runs for people who refuse to blend in. Heavyweight
-            240GSM cotton, uncompromising cuts, and graphics that don't chase the feed. No mass
-            production. No restocks.
+            <span className="text-gold">before you say a word.</span>
           </p>
-          <p className="mt-10 text-[0.6rem] tracking-brand text-chrome">EST. 2025</p>
+          <p className="mt-10 text-[0.6rem] tracking-brand text-muted-foreground">VLXR — EST. 2025</p>
         </div>
+      </section>
+
+      {/* DELIVERY INFO */}
+      <section className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:grid-cols-3">
+        {[
+          { icon: Truck, title: "FREE DELIVERY", sub: "Agra City Only" },
+          { icon: Package, title: "8-9 WORKING DAYS", sub: "Estimated Delivery" },
+          { icon: CreditCard, title: "ONLINE PAYMENT", sub: "UPI Only — No COD" },
+        ].map(({ icon: Icon, title, sub }) => (
+          <div key={title} className="flex flex-col items-center text-center">
+            <Icon className="h-7 w-7 text-gold" />
+            <p className="mt-4 text-sm font-bold tracking-brand">{title}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+          </div>
+        ))}
       </section>
     </>
   );
