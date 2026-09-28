@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/Header";
+import { Marquee } from "@/components/Marquee";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Toaster } from "@/components/ui/sonner";
@@ -129,6 +130,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <div className="flex min-h-screen flex-col bg-background">
+          <Marquee
+            className="border-b border-border"
+            items={["LIMITED PIECES", "DROP 001 LIVE", "VLXR — BORN RARE", "₹2,499", "FREE DELIVERY AGRA"]}
+          />
           <Header />
           <main className="flex-1">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

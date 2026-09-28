@@ -12,6 +12,7 @@ import { ProductVisual } from "@/components/ProductVisual";
 import { SizeGuideDialog } from "@/components/SizeGuideDialog";
 import { useCart } from "@/lib/cart";
 import { formatINR, getProduct } from "@/lib/products";
+import { PriceBlock } from "@/components/PriceBlock";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
@@ -100,9 +101,12 @@ function ProductDetail() {
 
         {/* DETAILS */}
         <div>
-          <p className="text-[0.6rem] tracking-brand text-gold">VLXR {product.collection}</p>
-          <h1 className="display mt-3 text-5xl sm:text-6xl">{product.name}</h1>
-          <p className="mt-4 text-xl font-semibold text-chrome">{formatINR(product.price)}</p>
+          <p className="text-[0.6rem] tracking-brand text-gold">VLXR / DROP 001</p>
+          <h1 className="display mt-3 text-5xl uppercase sm:text-6xl">{product.name}</h1>
+          <p className="mt-2 text-sm text-gold">★★★★★ <span className="text-muted-foreground">4.9/5</span></p>
+          <div className="mt-5">
+            <PriceBlock price={product.price} mrp={product.mrp} size="lg" />
+          </div>
           <div className="hairline-gold my-7" />
 
           <div className="flex items-center justify-between">

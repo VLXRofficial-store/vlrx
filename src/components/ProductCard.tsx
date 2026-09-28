@@ -3,7 +3,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ProductVisual } from "./ProductVisual";
 import { useCart } from "@/lib/cart";
-import { formatINR, type Product } from "@/lib/products";
+import { type Product } from "@/lib/products";
+import { PriceBlock } from "./PriceBlock";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
@@ -41,11 +42,11 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
-        <span className="text-[0.55rem] tracking-brand text-gold">{product.collection}</span>
+        <span className="text-[0.55rem] tracking-brand text-gold">VLXR / {product.collection}</span>
         <Link
           to="/product/$slug"
           params={{ slug: product.slug }}
-          className="text-sm font-medium text-foreground transition-colors hover:text-gold"
+          className="text-sm font-bold uppercase text-foreground transition-colors hover:text-gold"
         >
           {product.name}
         </Link>
@@ -59,7 +60,9 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           ))}
         </div>
-        <p className="mt-auto text-sm font-semibold text-chrome">{formatINR(product.price)}</p>
+        <div className="mt-auto">
+          <PriceBlock price={product.price} mrp={product.mrp} />
+        </div>
         <button
           type="button"
           onClick={quickAdd}
