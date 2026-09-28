@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Marquee } from "@/components/Marquee";
-import { PriceBlock } from "@/components/PriceBlock";
 import { ArrowRight, CreditCard, Package, Truck } from "lucide-react";
 import { Marquee } from "@/components/Marquee";
 import { PriceBlock } from "@/components/PriceBlock";
