@@ -5,6 +5,7 @@ export type Product = {
   name: string;
   collection: Collection;
   price: number;
+  mrp: number;
   sizes: string[];
   stock: number;
   badge?: "LIMITED";
@@ -36,7 +37,8 @@ export const PRODUCTS: Product[] = [
     slug: "vlxr-heritage-crest-tee",
     name: "VLXR Heritage Crest Tee",
     collection: "HERITAGE",
-    price: 2499,
+    price: 1999,
+    mrp: 2499,
     sizes: ["S", "M", "L", "XL", "XXL"],
     stock: 50,
     description:
@@ -46,7 +48,8 @@ export const PRODUCTS: Product[] = [
     slug: "vlxr-genesis-limited-drop",
     name: "VLXR Genesis Limited Drop",
     collection: "GENESIS",
-    price: 2999,
+    price: 1999,
+    mrp: 2499,
     sizes: ["M", "L", "XL"],
     stock: 25,
     badge: "LIMITED",
@@ -58,6 +61,7 @@ export const PRODUCTS: Product[] = [
     name: "VLXR Street Urban Tee",
     collection: "STREET",
     price: 1999,
+    mrp: 2499,
     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
     stock: 75,
     description:

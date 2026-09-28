@@ -48,7 +48,7 @@
 
 :root {
   --radius: 0.125rem;
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.13 0 0);
   --foreground: oklch(1 0 0);
   --surface: oklch(0.19 0 0);
   --card: oklch(0.19 0 0);
@@ -71,7 +71,7 @@
   --gold: oklch(0.73 0.09 86);
   --gold-soft: oklch(0.73 0.09 86 / 45%);
   --chrome: oklch(0.83 0.004 0);
-  --success: oklch(0.7 0.16 150);
+  --success: oklch(0.72 0.19 150);
   --warning: oklch(0.82 0.15 85);
 }
 
@@ -183,3 +183,6 @@
   height: 1px;
   background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
 }
+
+@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+@utility animate-marquee { animation: marquee 28s linear infinite; }
