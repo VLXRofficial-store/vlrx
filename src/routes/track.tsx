@@ -43,7 +43,7 @@ function Track() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
-    if (!/^\d{10}$/.test(phone) || !code.trim()) return setErr("Enter your order ID and 10-digit phone number");
+    if (!/^\d{10}$/.test(phone) || !code.trim()) { setErr("Enter your order ID and 10-digit phone number"); return; }
     setLoading(true);
     try {
       setResult(await fn({ data: { code, phone } }));
