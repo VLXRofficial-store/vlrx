@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { placeOrder } from "@/lib/orders.functions";
 import { useCart } from "@/lib/cart";
 import { AGRA_PINCODES, formatINR } from "@/lib/products";
 import { cn } from "@/lib/utils";
@@ -58,16 +61,27 @@ function Checkout() {
     return Object.keys(e).length === 0;
   };
 
-  const pay = () => {
+  const place = useServerFn(placeOrder);
+  const pay = async () => {
     setPaying(true);
-    // Placeholder until the real payment gateway is connected.
-    setTimeout(() => {
-      setOrderId(`VLXR${Math.floor(100000 + Math.random() * 900000)}`);
+    try {
+      // Payment gateway not connected yet — order is saved as "placed".
+      const res = await place({
+        data: {
+          ...form,
+          payment_method: method as "upi" | "card" | "netbanking",
+          items: detailed.map(({ line }) => ({ slug: line.slug, size: line.size, qty: line.qty })),
+        },
+      });
+      setOrderId(res.order_code);
       clear();
-      setPaying(false);
       setStep(4);
       window.scrollTo({ top: 0 });
-    }, 1500);
+    } catch {
+      toast.error("Could not place order. Please try again.");
+    } finally {
+      setPaying(false);
+    }
   };
 
   if (step === 4 && orderId) {

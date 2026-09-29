@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Instagram, Mail, MapPin, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { INSTAGRAM_URL, WHATSAPP_NUMBER } from "@/lib/products";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -24,18 +25,25 @@ function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: { name?: string; email?: string; message?: string } = {};
-    if (!form.name.trim()) next.name = "Name is required";
+    if (!form.name.trim() || form.name.length > 100) next.name = "Name is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Enter a valid email";
-    if (form.message.trim().length < 10) next.message = "Tell us a little more";
+    if (form.message.trim().length < 10 || form.message.length > 2000) next.message = "Tell us a little more (10–2000 chars)";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    const text = `Hi VLXR, I'm ${form.name} (${form.email}). ${form.message}`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank");
-    toast.success("Opening WhatsApp with your message");
+    const { error } = await supabase.from("contact_messages").insert({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+    });
+    if (error) {
+      toast.error("Could not send. Please try WhatsApp.");
+      return;
+    }
+    toast.success("Message sent! We reply within 24 hours.");
     setForm({ name: "", email: "", message: "" });
   };
 
