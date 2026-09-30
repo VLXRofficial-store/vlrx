@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { claimAdmin } from "@/lib/orders.functions";
+import { draftReply } from "@/lib/reply.functions";
 import { formatINR } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
@@ -133,12 +134,37 @@ function Admin() {
         <div className="mt-6 space-y-4">
           {messages.data?.length === 0 && <p className="text-muted-foreground">No messages yet.</p>}
           {messages.data?.map((m) => (
-            <div key={m.id} className="card-surface p-5">
-              <p className="font-bold">{m.name} <span className="text-xs font-normal text-muted-foreground">· {m.email} · {new Date(m.created_at).toLocaleString("en-IN")}</span></p>
-              <p className="mt-2 whitespace-pre-wrap text-sm">{m.message}</p>
-            </div>
+            <MessageCard key={m.id} m={m} />
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function MessageCard({ m }: { m: { id: string; name: string; email: string; message: string; created_at: string } }) {
+  const draft = useServerFn(draftReply);
+  const [reply, setReply] = useState("");
+  const [busy, setBusy] = useState(false);
+  const make = async () => {
+    setBusy(true);
+    try { setReply((await draft({ data: { name: m.name, message: m.message } })).reply); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Could not draft reply"); }
+    setBusy(false);
+  };
+  return (
+    <div className="card-surface p-5">
+      <p className="font-bold">{m.name} <span className="text-xs font-normal text-muted-foreground">· {m.email} · {new Date(m.created_at).toLocaleString("en-IN")}</span></p>
+      <p className="mt-2 whitespace-pre-wrap text-sm">{m.message}</p>
+      <button className="btn-base btn-gold mt-4" onClick={make} disabled={busy}>{busy ? "Drafting..." : "✦ Draft Reply"}</button>
+      {reply && (
+        <>
+          <textarea className="mt-4 h-40 w-full border border-input bg-surface p-3 text-sm text-foreground" value={reply} onChange={(e) => setReply(e.target.value)} />
+          <div className="mt-2 flex gap-3">
+            <a className="btn-base btn-silver" href={`mailto:${m.email}?subject=${encodeURIComponent("Re: Your message to VLXR")}&body=${encodeURIComponent(reply)}`}>Send via Email</a>
+            <button className="btn-base btn-silver" onClick={() => { navigator.clipboard.writeText(reply); toast.success("Copied"); }}>Copy</button>
+          </div>
+        </>
       )}
     </div>
   );
