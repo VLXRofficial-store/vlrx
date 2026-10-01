@@ -62,7 +62,21 @@ export const claimAdmin = createServerFn({ method: "POST" })
       .from("user_roles")
       .select("id", { count: "exact", head: true })
       .eq("role", "admin");
-    if ((count ?? 0) > 0) return { ok: false };
-    await supabaseAdmin.from("user_roles").insert({ user_id: context.userId, role: "admin" });
-    return { ok: true };
+    if ((count ?? 0) > 0) return { ok: false, reason: "taken" as const };
+    const { error } = await supabaseAdmin.from("user_roles").insert({ user_id: context.userId, role: "admin" });
+    if (error) {
+      console.error("claimAdmin insert failed", error);
+      return { ok: false, reason: "error" as const };
+    }
+    return { ok: true, reason: null };
   });
+
+// Public: only tells whether first-time admin setup is already done (no user data).
+export const getAdminSetupState = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { count } = await supabaseAdmin
+    .from("user_roles")
+    .select("id", { count: "exact", head: true })
+    .eq("role", "admin");
+  return { adminExists: (count ?? 0) > 0 };
+});

@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminSetupChecklist } from "@/components/AdminSetupChecklist";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -22,6 +23,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +34,17 @@ function AuthPage() {
         ? await supabase.auth.signInWithPassword({ email, password })
         : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/admin` } });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      if (/not confirmed/i.test(error.message)) {
+        setPendingEmail(email);
+        toast.error("Email not confirmed yet — open the link we emailed you, or resend it below.");
+      } else if (/invalid login/i.test(error.message)) {
+        toast.error("Wrong email or password. Use 'Forgot password?' to set a new one.");
+      } else toast.error(error.message);
+      return;
+    }
     if (mode === "up") {
+      setPendingEmail(email);
       toast.success("Account created. Check your email to confirm, then sign in.");
       setMode("in");
       return;
@@ -78,6 +89,9 @@ function AuthPage() {
           </button>
         )}
       </form>
+      <div className="mt-6">
+        <AdminSetupChecklist pendingEmail={pendingEmail} onCreateAccount={() => setMode("up")} />
+      </div>
     </div>
   );
 }
