@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { claimAdmin } from "@/lib/orders.functions";
+import { AdminSetupChecklist } from "@/components/AdminSetupChecklist";
 import { draftReply } from "@/lib/reply.functions";
 import { formatINR } from "@/lib/products";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,6 @@ function Admin() {
   const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const claim = useServerFn(claimAdmin);
   const [tab, setTab] = useState<"orders" | "messages">("orders");
 
   const role = useQuery({
@@ -68,19 +67,10 @@ function Admin() {
     return (
       <div className="mx-auto max-w-md px-5 py-20 text-center">
         <h1 className="display text-4xl">NOT AN ADMIN</h1>
-        <p className="mt-4 text-sm text-muted-foreground">Signed in as {user.email}. If this is the first setup, claim admin access.</p>
-        <button
-          className="btn-base btn-gold mt-6 w-full"
-          onClick={async () => {
-            const r = await claim();
-            if (r.ok) {
-              toast.success("You are now the admin");
-              qc.invalidateQueries({ queryKey: ["is-admin"] });
-            } else toast.error("An admin already exists.");
-          }}
-        >
-          Claim Admin Access
-        </button>
+        <p className="mt-4 text-sm text-muted-foreground">Signed in as {user.email}. Finish the steps below to get admin access.</p>
+        <div className="mt-6 text-left">
+          <AdminSetupChecklist />
+        </div>
         <button className="mt-4 text-xs underline text-muted-foreground" onClick={signOut}>Sign out</button>
       </div>
     );
