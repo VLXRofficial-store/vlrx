@@ -15,6 +15,16 @@ export function ProductVisual({
   side?: "front" | "back";
   className?: string;
 }) {
+  const img = side === "back" ? product.backImage ?? product.frontImage : product.frontImage;
+  if (img)
+    return (
+      <img
+        src={img}
+        alt={`${product.name} — ${side} view`}
+        loading="lazy"
+        className={cn("h-full w-full bg-surface object-cover", className)}
+      />
+    );
   return (
     <div
       className={cn(
