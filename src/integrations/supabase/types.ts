@@ -21,6 +21,8 @@ export type Database = {
           id: string
           message: string
           name: string
+          note: string
+          status: string
         }
         Insert: {
           created_at?: string
@@ -28,6 +30,8 @@ export type Database = {
           id?: string
           message: string
           name: string
+          note?: string
+          status?: string
         }
         Update: {
           created_at?: string
@@ -35,6 +39,8 @@ export type Database = {
           id?: string
           message?: string
           name?: string
+          note?: string
+          status?: string
         }
         Relationships: []
       }
@@ -43,6 +49,7 @@ export type Database = {
           address: string
           area: string
           city: string
+          courier: string
           created_at: string
           email: string
           id: string
@@ -55,12 +62,14 @@ export type Database = {
           state: string
           status: string
           subtotal: number
+          tracking_number: string
           updated_at: string
         }
         Insert: {
           address: string
           area?: string
           city: string
+          courier?: string
           created_at?: string
           email: string
           id?: string
@@ -73,12 +82,14 @@ export type Database = {
           state: string
           status?: string
           subtotal?: number
+          tracking_number?: string
           updated_at?: string
         }
         Update: {
           address?: string
           area?: string
           city?: string
+          courier?: string
           created_at?: string
           email?: string
           id?: string
@@ -91,6 +102,82 @@ export type Database = {
           state?: string
           status?: string
           subtotal?: number
+          tracking_number?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          back_image: string | null
+          badges: string[]
+          care: string
+          collection: string
+          created_at: string
+          description: string
+          extra_images: string[]
+          fabric: string
+          fit: string
+          front_image: string | null
+          id: string
+          low_stock_alert: number
+          mrp: number
+          name: string
+          price: number
+          seo_description: string
+          seo_title: string
+          short_description: string
+          size_stock: Json
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          back_image?: string | null
+          badges?: string[]
+          care?: string
+          collection?: string
+          created_at?: string
+          description?: string
+          extra_images?: string[]
+          fabric?: string
+          fit?: string
+          front_image?: string | null
+          id?: string
+          low_stock_alert?: number
+          mrp?: number
+          name: string
+          price?: number
+          seo_description?: string
+          seo_title?: string
+          short_description?: string
+          size_stock?: Json
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          back_image?: string | null
+          badges?: string[]
+          care?: string
+          collection?: string
+          created_at?: string
+          description?: string
+          extra_images?: string[]
+          fabric?: string
+          fit?: string
+          front_image?: string | null
+          id?: string
+          low_stock_alert?: number
+          mrp?: number
+          name?: string
+          price?: number
+          seo_description?: string
+          seo_title?: string
+          short_description?: string
+          size_stock?: Json
+          slug?: string
+          status?: string
           updated_at?: string
         }
         Relationships: []
