@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
-import { ALL_SIZES, COLLECTIONS, PRODUCTS, type Collection } from "@/lib/products";
+import { ALL_SIZES, COLLECTIONS, type Collection } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
 type ShopSearch = { collection?: Collection | undefined };
@@ -42,6 +43,7 @@ function Shop() {
   const [size, setSize] = useState<string | "ALL">("ALL");
   const [price, setPrice] = useState<(typeof PRICE_FILTERS)[number]["id"]>("all");
 
+  const PRODUCTS = useCatalog();
   const filtered = useMemo(() => {
     const priceTest = PRICE_FILTERS.find((f) => f.id === price)!.test;
     return PRODUCTS.filter(
@@ -50,7 +52,7 @@ function Shop() {
         (size === "ALL" || p.sizes.includes(size)) &&
         priceTest(p.price),
     );
-  }, [collection, size, price]);
+  }, [collection, size, price, PRODUCTS]);
 
   const chip = (active: boolean) =>
     cn(

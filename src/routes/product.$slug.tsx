@@ -11,13 +11,15 @@ import {
 import { ProductVisual } from "@/components/ProductVisual";
 import { SizeGuideDialog } from "@/components/SizeGuideDialog";
 import { useCart } from "@/lib/cart";
-import { formatINR, getProduct } from "@/lib/products";
+import { formatINR } from "@/lib/products";
+import { productsQuery } from "@/lib/catalog";
 import { PriceBlock } from "@/components/PriceBlock";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
-    const product = getProduct(params.slug);
+  loader: async ({ params, context }) => {
+    const all = await context.queryClient.ensureQueryData(productsQuery);
+    const product = all.find((p) => p.slug === params.slug);
     if (!product) throw notFound();
     return { product };
   },

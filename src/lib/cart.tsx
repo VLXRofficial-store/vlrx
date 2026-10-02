@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { PRODUCTS, type Product } from "./products";
+import { type Product } from "./products";
+import { useCatalog } from "./catalog";
 
 export type CartLine = {
   slug: string;
@@ -24,6 +25,7 @@ const STORAGE_KEY = "vlxr-cart-v1";
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const PRODUCTS = useCatalog();
 
   useEffect(() => {
     try {
@@ -70,7 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setLines((prev) => prev.filter((l) => !(l.slug === slug && l.size === size))),
       clear: () => setLines([]),
     };
-  }, [lines]);
+  }, [lines, PRODUCTS]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

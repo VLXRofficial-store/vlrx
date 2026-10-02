@@ -10,6 +10,10 @@ export type Product = {
   stock: number;
   badge?: "LIMITED";
   description: string;
+  badges?: string[];
+  frontImage?: string;
+  backImage?: string;
+  extraImages?: string[];
 };
 
 export const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
