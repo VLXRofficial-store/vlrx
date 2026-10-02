@@ -3,7 +3,8 @@ import { ArrowRight, CreditCard, Package, Truck } from "lucide-react";
 import { Marquee } from "@/components/Marquee";
 import { PriceBlock } from "@/components/PriceBlock";
 import { ProductCard } from "@/components/ProductCard";
-import { COLLECTIONS, PRODUCTS } from "@/lib/products";
+import { COLLECTIONS } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const PRODUCTS = useCatalog();
   return (
     <>
       {/* HERO */}

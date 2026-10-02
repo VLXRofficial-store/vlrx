@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getProduct, ALL_SIZES } from "./products";
 
 const orderSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -22,18 +21,30 @@ const orderSchema = z.object({
 export const placeOrder = createServerFn({ method: "POST" })
   .inputValidator((d) => orderSchema.parse(d))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows } = await supabaseAdmin
+      .from("products")
+      .select("slug,name,price,size_stock,status")
+      .in("slug", data.items.map((i) => i.slug));
     const items = data.items.map((i) => {
-      const p = getProduct(i.slug);
-      if (!p || !ALL_SIZES.includes(i.size)) throw new Error("Invalid item");
+      const p = rows?.find((r) => r.slug === i.slug && r.status === "active");
+      const stock = (p?.size_stock ?? {}) as Record<string, number>;
+      if (!p || (stock[i.size] ?? 0) < i.qty) throw new Error(`Sorry, ${p?.name ?? "item"} size ${i.size} is out of stock`);
       return { slug: p.slug, name: p.name, size: i.size, qty: i.qty, price: p.price };
     });
     const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
     const order_code = `VLXR${Math.floor(100000 + Math.random() * 900000)}`;
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("orders").insert({ ...data, items, subtotal, order_code });
     if (error) {
       console.error(error);
       throw new Error("Could not place order");
+    }
+    for (const i of items) {
+      const p = rows!.find((r) => r.slug === i.slug)!;
+      const stock = { ...(p.size_stock as Record<string, number>) };
+      stock[i.size] = Math.max(0, (stock[i.size] ?? 0) - i.qty);
+      p.size_stock = stock;
+      await supabaseAdmin.from("products").update({ size_stock: stock }).eq("slug", i.slug);
     }
     return { order_code };
   });
