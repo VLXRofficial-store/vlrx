@@ -8,7 +8,7 @@ import { downloadCsv, ORDER_STATUSES, useOrders, type OrderItem } from "@/lib/ad
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/orders/")({
-  validateSearch: (s: Record<string, unknown>): { status?: string } => ({ status: typeof s["status"] === "string" ? s["status"] : undefined }),
+  validateSearch: (s: Record<string, unknown>): { status?: string | undefined } => ({ status: typeof s["status"] === "string" ? s["status"] : undefined }),
   component: Orders,
 });
 
