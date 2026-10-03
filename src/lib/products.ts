@@ -8,11 +8,11 @@ export type Product = {
   mrp: number;
   sizes: string[];
   stock: number;
-  badge?: "LIMITED";
+  badge?: "LIMITED" | undefined;
   description: string;
   badges?: string[];
-  frontImage?: string;
-  backImage?: string;
+  frontImage?: string | undefined;
+  backImage?: string | undefined;
   extraImages?: string[];
 };
 
