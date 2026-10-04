@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      collections: {
+        Row: {
+          banner_image: string | null
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          title: string
+          visible: boolean
+        }
+        Insert: {
+          banner_image?: string | null
+          created_at?: string
+          description?: string
+          display_order?: number
+          id: string
+          title: string
+          visible?: boolean
+        }
+        Update: {
+          banner_image?: string | null
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          title?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -44,6 +74,45 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          kind: string
+          max_uses: number | null
+          min_order: number
+          used_count: number
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          max_uses?: number | null
+          min_order?: number
+          used_count?: number
+          value?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          max_uses?: number | null
+          min_order?: number
+          used_count?: number
+          value?: number
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           address: string
@@ -51,6 +120,8 @@ export type Database = {
           city: string
           courier: string
           created_at: string
+          discount_amount: number
+          discount_code: string | null
           email: string
           id: string
           items: Json
@@ -71,6 +142,8 @@ export type Database = {
           city: string
           courier?: string
           created_at?: string
+          discount_amount?: number
+          discount_code?: string | null
           email: string
           id?: string
           items?: Json
@@ -91,6 +164,8 @@ export type Database = {
           city?: string
           courier?: string
           created_at?: string
+          discount_amount?: number
+          discount_code?: string | null
           email?: string
           id?: string
           items?: Json

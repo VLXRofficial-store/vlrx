@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { placeOrder } from "@/lib/orders.functions";
+import { checkDiscount, placeOrder } from "@/lib/orders.functions";
 import { useCart } from "@/lib/cart";
 import { AGRA_PINCODES, formatINR } from "@/lib/products";
 import { cn } from "@/lib/utils";
@@ -62,6 +62,16 @@ function Checkout() {
   };
 
   const place = useServerFn(placeOrder);
+  const check = useServerFn(checkDiscount);
+  const [code, setCode] = useState("");
+  const [disc, setDisc] = useState<{ code: string; amount: number } | null>(null);
+  const applyCode = async () => {
+    if (!code.trim()) return;
+    const r = await check({ data: { code, subtotal } });
+    if (r.ok) { setDisc({ code: code.trim().toUpperCase(), amount: r.amount }); toast.success(`Code applied — you save ${formatINR(r.amount)}`); }
+    else { setDisc(null); toast.error(r.error ?? "Invalid code"); }
+  };
+  const total = subtotal - (disc?.amount ?? 0);
   const pay = async () => {
     setPaying(true);
     try {
@@ -70,6 +80,7 @@ function Checkout() {
         data: {
           ...form,
           payment_method: method as "upi" | "card" | "netbanking",
+          ...(disc ? { discount_code: disc.code } : {}),
           items: detailed.map(({ line }) => ({ slug: line.slug, size: line.size, qty: line.qty })),
         },
       });
@@ -77,8 +88,8 @@ function Checkout() {
       clear();
       setStep(4);
       window.scrollTo({ top: 0 });
-    } catch {
-      toast.error("Could not place order. Please try again.");
+    } catch (e) {
+      toast.error(e instanceof Error && e.message ? e.message : "Could not place order. Please try again.");
     } finally {
       setPaying(false);
     }
@@ -215,7 +226,7 @@ function Checkout() {
               <div className="flex gap-3">
                 <button type="button" className="btn-base btn-silver" onClick={() => setStep(2)} disabled={paying}>Back</button>
                 <button type="button" className="btn-base btn-gold flex-1" onClick={pay} disabled={paying}>
-                  {paying ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing</> : `Pay Now ${formatINR(subtotal)}`}
+                  {paying ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing</> : `Pay Now ${formatINR(total)}`}
                 </button>
               </div>
             </div>
@@ -235,10 +246,20 @@ function Checkout() {
               <span className="text-muted-foreground">Delivery</span>
               <span className="text-xs">{pinValid ? (isAgra ? "FREE" : "To be confirmed") : "Calculated next"}</span>
             </div>
+            <div className="flex gap-2 pt-2">
+              <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="DISCOUNT CODE"
+                className="min-w-0 flex-1 border border-input bg-surface px-3 py-2 text-xs uppercase outline-none focus:border-gold" />
+              <button type="button" onClick={applyCode} className="btn-base btn-silver !px-4 !py-2 text-xs">Apply</button>
+            </div>
+            {disc && (
+              <div className="flex justify-between text-success">
+                <span>Discount ({disc.code})</span><span>−{formatINR(disc.amount)}</span>
+              </div>
+            )}
             <div className="hairline-gold my-3" />
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span className="text-gold">{formatINR(subtotal)}</span>
+              <span className="text-gold">{formatINR(total)}</span>
             </div>
           </div>
         </aside>
