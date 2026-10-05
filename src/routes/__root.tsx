@@ -17,6 +17,7 @@ import { Header } from "@/components/Header";
 import { Marquee } from "@/components/Marquee";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { SupportChat } from "@/components/SupportChat";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -142,6 +143,7 @@ function RootComponent() {
           </main>
           <Footer />
           <WhatsAppButton />
+          <SupportChat />
           <Toaster />
         </div>
       </CartProvider>

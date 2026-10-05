@@ -3,8 +3,7 @@ import { ArrowRight, CreditCard, Package, Truck } from "lucide-react";
 import { Marquee } from "@/components/Marquee";
 import { PriceBlock } from "@/components/PriceBlock";
 import { ProductCard } from "@/components/ProductCard";
-import { COLLECTIONS } from "@/lib/products";
-import { useCatalog } from "@/lib/catalog";
+import { useCatalog, useCollections } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,6 +26,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const PRODUCTS = useCatalog();
+  const COLLECTIONS = useCollections();
   return (
     <>
       {/* HERO */}
@@ -90,7 +90,7 @@ function Home() {
               search={{ collection: c.id }}
               className="card-surface group relative flex min-h-56 flex-col justify-end overflow-hidden p-6 transition-colors hover:border-gold"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.07),transparent_60%)]" />
+              {c.banner ? <img src={c.banner} alt={c.title} className="absolute inset-0 h-full w-full object-cover opacity-50" loading="lazy" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.07),transparent_60%)]" />}
               <span className="display relative text-3xl text-chrome transition-colors group-hover:text-gold">
                 {c.title}
               </span>

@@ -16,21 +16,27 @@ export function Stat({ label, value }: { label: string; value: string | number }
 }
 
 function Dashboard() {
-  const orders = useOrders().data ?? [];
+  const oq = useOrders();
+  const orders = oq.data ?? [];
   const products = useAdminProducts().data ?? [];
   const live = orders.filter((o) => o.status !== "cancelled");
   const today = live.filter((o) => isToday(o.created_at));
   const sum = (a: typeof orders) => a.reduce((s, o) => s + o.subtotal, 0);
   const low = products.filter((p) => totalStock(p.size_stock) < p.low_stock_alert).length;
 
+  if (oq.isLoading) return <p className="py-20 text-center text-muted-foreground">Loading…</p>;
+  if (oq.error) return <p className="py-20 text-center text-destructive">Could not load orders: {String((oq.error as Error).message)}</p>;
+  const cancelled = orders.filter((o) => o.status === "cancelled").length;
   return (
     <div>
       <h1 className="display text-5xl">DASHBOARD</h1>
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
         <Stat label="Today orders" value={today.length} />
         <Stat label="Today revenue" value={formatINR(sum(today))} />
-        <Stat label="Total orders" value={orders.length} />
-        <Stat label="Total revenue" value={formatINR(sum(live))} />
+        <Stat label="Total orders (all)" value={orders.length} />
+        <Stat label="Active orders" value={live.length} />
+        <Stat label="Cancelled orders" value={cancelled} />
+        <Stat label="Total revenue (excl. cancelled)" value={formatINR(sum(live))} />
         <Stat label="Pending orders" value={orders.filter((o) => o.status === "placed").length} />
         <Stat label="Low stock" value={low} />
       </div>

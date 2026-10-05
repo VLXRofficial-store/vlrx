@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { COLLECTIONS } from "@/lib/products";
+import { useAdminCollections } from "@/lib/admin";
 import { BADGES, SIZES, uploadProductImage } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/admin/products/$id")({
@@ -50,6 +50,7 @@ function ImageSlot({ title, value, onChange }: { title: string; value: string | 
 }
 
 function ProductForm() {
+  const COLLECTIONS = useAdminCollections().data ?? [];
   const { id } = Route.useParams();
   const isNew = id === "new";
   const navigate = useNavigate();

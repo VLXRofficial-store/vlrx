@@ -64,5 +64,5 @@ export const supportChat = createServerFn({ method: "POST" })
       }
     }
     if (!text.trim()) return { reply: "", error: "Jawab nahi mil paya. WhatsApp karein: +91 8817830829." };
-    return { reply: text.trim(), error: null };
+    return { reply: text.replace(/\*\*/g, "").trim(), error: null };
   });
