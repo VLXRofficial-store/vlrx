@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { BarChart3, Home, LogOut, MessageSquare, Package, Shirt } from "lucide-react";
+import { BarChart3, Home, Image, Layers, LogOut, MessageSquare, Package, Settings, Shirt, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminSetupChecklist } from "@/components/AdminSetupChecklist";
 import { useMessages, useOrders } from "@/lib/admin";
@@ -23,6 +23,10 @@ const NAV = [
   { to: "/admin/orders", label: "Orders", icon: Package },
   { to: "/admin/messages", label: "Messages", icon: MessageSquare },
   { to: "/admin/reports", label: "Reports", icon: BarChart3 },
+  { to: "/admin/media", label: "Media", icon: Image },
+  { to: "/admin/collections", label: "Collections", icon: Layers },
+  { to: "/admin/discounts", label: "Discounts", icon: Tag },
+  { to: "/admin/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function AdminLayout() {
@@ -96,10 +100,10 @@ function Shell({ onSignOut }: { onSignOut: () => void }) {
         </nav>
       </aside>
       <main className="min-w-0 flex-1"><Outlet /></main>
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-background lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex overflow-x-auto border-t border-border bg-background lg:hidden">
         {NAV.map((n) => (
           <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n }}
-            className="relative flex flex-1 flex-col items-center gap-1 py-2 text-[0.55rem] text-muted-foreground"
+            className="relative flex min-w-[68px] flex-1 flex-col items-center gap-1 py-2 text-[0.55rem] text-muted-foreground"
             activeProps={{ className: "!text-gold" }}>
             <n.icon className="h-5 w-5" />{n.label}
             {badges[n.to] ? <span className="absolute right-3 top-1 bg-gold px-1 text-[0.5rem] font-bold text-primary-foreground">{badges[n.to]}</span> : null}

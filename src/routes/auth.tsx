@@ -1,5 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getAdminSetupState } from "@/lib/orders.functions";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminSetupChecklist } from "@/components/AdminSetupChecklist";
@@ -24,9 +27,13 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const getSetup = useServerFn(getAdminSetupState);
+  const setup = useQuery({ queryKey: ["admin-setup"], queryFn: () => getSetup() });
+  const adminExists = setup.data?.adminExists === true;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "up" && adminExists) { toast.error("Admin already set up. Only one admin account is allowed — please sign in."); setMode("in"); return; }
     if (password.length < 8) { toast.error("Password must be at least 8 characters"); return; }
     setBusy(true);
     const { error } =
@@ -40,6 +47,8 @@ function AuthPage() {
         toast.error("Email not confirmed yet — open the link we emailed you, or resend it below.");
       } else if (/invalid login/i.test(error.message)) {
         toast.error("Wrong email or password. Use 'Forgot password?' to set a new one.");
+      } else if (/already registered/i.test(error.message)) {
+        toast.error("This email already has an account — sign in instead."); setMode("in");
       } else toast.error(error.message);
       return;
     }
@@ -71,9 +80,13 @@ function AuthPage() {
         <button className="btn-base btn-gold mt-6 w-full" disabled={busy}>
           {mode === "in" ? "Sign In" : "Create Account"}
         </button>
-        <button type="button" className="mt-4 w-full text-xs text-muted-foreground underline" onClick={() => setMode(mode === "in" ? "up" : "in")}>
-          {mode === "in" ? "First time? Create admin account" : "Already have an account? Sign in"}
-        </button>
+        {!adminExists ? (
+          <button type="button" className="mt-4 w-full text-xs text-muted-foreground underline" onClick={() => setMode(mode === "in" ? "up" : "in")}>
+            {mode === "in" ? "First time? Create admin account" : "Already have an account? Sign in"}
+          </button>
+        ) : (
+          <p className="mt-4 text-center text-[0.65rem] text-muted-foreground">Admin is already set up — only one admin account is allowed.</p>
+        )}
         {mode === "in" && (
           <button
             type="button"
