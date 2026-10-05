@@ -66,7 +66,7 @@ function Media() {
   const remove = async (names: string[]) => {
     if (!names.length || !confirm(`Delete ${names.length} image(s)? Products using them will lose the photo.`)) return;
     const { error } = await supabase.storage.from(BUCKET).remove(names);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Deleted");
     setSelected([]);
     qc.invalidateQueries({ queryKey: ["media"] });

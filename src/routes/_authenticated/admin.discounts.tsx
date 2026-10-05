@@ -22,14 +22,14 @@ function Discounts() {
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = f.code.trim().toUpperCase().replace(/\s+/g, "");
-    if (!/^[A-Z0-9_-]{3,30}$/.test(code)) return toast.error("Code: 3-30 letters/numbers");
-    if (f.value <= 0 || (f.kind === "percent" && f.value > 90)) return toast.error("Percent must be 1-90");
+    if (!/^[A-Z0-9_-]{3,30}$/.test(code)) { toast.error("Code: 3-30 letters/numbers"); return; }
+    if (f.value <= 0 || (f.kind === "percent" && f.value > 90)) { toast.error("Percent must be 1-90"); return; }
     const { error } = await supabase.from("discount_codes").insert({
       code, kind: f.kind, value: f.value, min_order: f.min_order,
       max_uses: f.max_uses ? Number(f.max_uses) : null,
       expires_at: f.expires_at ? new Date(f.expires_at + "T23:59:59").toISOString() : null,
     });
-    if (error) return toast.error(error.code === "23505" ? "Code already exists" : error.message);
+    if (error) { toast.error(error.code === "23505" ? "Code already exists" : error.message); return; }
     toast.success("Code created");
     setF(EMPTY);
     refresh();

@@ -19,9 +19,9 @@ function Collections() {
 
   const add = async () => {
     const id = newId.trim().toUpperCase().replace(/[^A-Z0-9]+/g, "-");
-    if (!id) return toast.error("Enter a collection name");
+    if (!id) { toast.error("Enter a collection name"); return; }
     const { error } = await supabase.from("collections").insert({ id, title: `VLXR ${id}`, display_order: (q.data?.length ?? 0) + 1 });
-    if (error) return toast.error(error.code === "23505" ? "Collection already exists" : error.message);
+    if (error) { toast.error(error.code === "23505" ? "Collection already exists" : error.message); return; }
     setNewId("");
     toast.success("Collection added");
     refresh();
@@ -55,16 +55,16 @@ function CollectionCard({ c, count, onSaved }: { c: Tables<"collections">; count
       display_order: next.display_order, visible: next.visible,
     }).eq("id", c.id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setF(next);
     toast.success("Saved");
     onSaved();
   };
   const del = async () => {
-    if (count > 0) return toast.error("Move its products to another collection first");
+    if (count > 0) { toast.error("Move its products to another collection first"); return; }
     if (!confirm(`Delete ${c.title}?`)) return;
     const { error } = await supabase.from("collections").delete().eq("id", c.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     onSaved();
   };
   return (

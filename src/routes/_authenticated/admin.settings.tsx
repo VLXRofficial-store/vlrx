@@ -16,17 +16,17 @@ function Settings() {
 
   const change = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!oldPw) return toast.error("Enter your current password");
-    if (newPw.length < 8) return toast.error("New password must be at least 8 characters");
-    if (newPw !== confirmPw) return toast.error("New passwords do not match");
-    if (newPw === oldPw) return toast.error("New password must be different from the old one");
+    if (!oldPw) { toast.error("Enter your current password"); return; }
+    if (newPw.length < 8) { toast.error("New password must be at least 8 characters"); return; }
+    if (newPw !== confirmPw) { toast.error("New passwords do not match"); return; }
+    if (newPw === oldPw) { toast.error("New password must be different from the old one"); return; }
     setBusy(true);
     // Verify the old password first.
     const { error: authErr } = await supabase.auth.signInWithPassword({ email: user.email!, password: oldPw });
-    if (authErr) { setBusy(false); return toast.error("Current password is wrong"); }
+    if (authErr) { setBusy(false); { toast.error("Current password is wrong"); return; } }
     const { error } = await supabase.auth.updateUser({ password: newPw });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setOldPw(""); setNewPw(""); setConfirmPw("");
     toast.success("Password changed");
   };
