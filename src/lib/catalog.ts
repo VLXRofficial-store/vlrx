@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { PRODUCTS, type Collection, type Product } from "./products";
+import { COLLECTIONS, PRODUCTS, type Collection, type Product } from "./products";
 
 const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -52,4 +52,20 @@ export const productsQuery = queryOptions({ queryKey: ["catalog"], queryFn: fetc
 
 export function useCatalog() {
   return useQuery(productsQuery).data ?? [];
+}
+
+export type CollectionRow = { id: string; title: string; description: string; banner_image: string | null; display_order: number; visible: boolean };
+/** Visible collections ordered for the storefront; falls back to static list. */
+export function useCollections() {
+  const q = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("collections").select("*").eq("visible", true).order("display_order");
+      if (error) throw error;
+      return data as CollectionRow[];
+    },
+  });
+  return (q.data ?? COLLECTIONS.map((c, i) => ({ id: c.id, title: c.title, description: c.blurb, banner_image: null, display_order: i, visible: true }))).map((c) => ({
+    id: c.id as Collection, title: c.title, blurb: c.description, banner: c.banner_image,
+  }));
 }
