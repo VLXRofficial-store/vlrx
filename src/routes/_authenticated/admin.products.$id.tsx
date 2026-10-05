@@ -50,6 +50,7 @@ function ImageSlot({ title, value, onChange }: { title: string; value: string | 
 }
 
 function ProductForm() {
+  const COLLECTIONS = useAdminCollections().data ?? [];
   const { id } = Route.useParams();
   const isNew = id === "new";
   const navigate = useNavigate();

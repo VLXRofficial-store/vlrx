@@ -70,3 +70,24 @@ export function downloadCsv(name: string, rows: (string | number)[][]) {
   a.download = name;
   a.click();
 }
+
+export function useAdminCollections() {
+  return useQuery({
+    queryKey: ["admin-collections"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("collections").select("*").order("display_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+export function useDiscounts() {
+  return useQuery({
+    queryKey: ["admin-discounts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("discount_codes").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
