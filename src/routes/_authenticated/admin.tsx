@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { BarChart3, Home, Image, Layers, LogOut, MessageSquare, Package, Settings, Shirt, Tag } from "lucide-react";
+import { BarChart3, Bell, Home, Image, Layers, LogOut, MessageSquare, Package, Settings, Shirt, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminSetupChecklist } from "@/components/AdminSetupChecklist";
 import { useMessages, useOrders } from "@/lib/admin";
@@ -26,6 +26,7 @@ const NAV = [
   { to: "/admin/media", label: "Media", icon: Image },
   { to: "/admin/collections", label: "Collections", icon: Layers },
   { to: "/admin/discounts", label: "Discounts", icon: Tag },
+  { to: "/admin/notifications", label: "Alerts", icon: Bell },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ] as const;
 

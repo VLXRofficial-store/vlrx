@@ -91,3 +91,4 @@ export function useDiscounts() {
     },
   });
 }
+export const formatINRsafe = (n: number) => "₹" + Number(n || 0).toLocaleString("en-IN");
